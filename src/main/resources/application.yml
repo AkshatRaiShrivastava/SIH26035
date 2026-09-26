@@ -1,0 +1,9 @@
+spring:
+  application.name: legal-metrology-platform
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/legal_metrology}
+    username: ${DATABASE_USER:legal_metrology}
+    password: ${DATABASE_PASSWORD:legal_metrology}
+  jpa.hibernate.ddl-auto: validate
+  flyway.enabled: true
+server.port: ${PORT:8080}

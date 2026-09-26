@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: legal-metrology-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: legal_metrology
+      POSTGRES_USER: legal_user
+      POSTGRES_PASSWORD: legal_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - legal_metrology_data:/var/lib/postgresql/data
+
+volumes:
+  legal_metrology_data:

@@ -1,0 +1,8 @@
+com/legalmetrology/LegalMetrologyApplication.class
+com/legalmetrology/rulesengine/RulesEngine$InstrumentSpec.class
+com/legalmetrology/rulesengine/RulesEngine$CalculationOutput.class
+com/legalmetrology/rulesengine/RulesEngine$MpeLookupResult.class
+com/legalmetrology/rulesengine/RulesEngine$ObservationInput.class
+com/legalmetrology/rulesengine/OimlR76RulesEngine.class
+com/legalmetrology/rulesengine/RulesEngine.class
+com/legalmetrology/rulesengine/RulesEngine$TestRollupResult.class
