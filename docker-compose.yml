@@ -1,19 +1,58 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg16
-    container_name: legal-metrology-postgres
+    image: ankane/pgvector:latest
+    container_name: postgres
     restart: unless-stopped
-
     environment:
       POSTGRES_DB: legal_metrology
-      POSTGRES_USER: legal_user
-      POSTGRES_PASSWORD: legal_password
-
-    ports:
-      - "5432:5432"
-
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - legal_metrology_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/legal_metrology
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      PUBLIC_VERIFICATION_URL: ${PUBLIC_VERIFICATION_URL:-http://localhost:5173/verification}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+      - ~/.m2:/root/.m2
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  rag-service:
+    build: ./rag-service
+    container_name: rag-service
+    restart: unless-stopped
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.1-8b-instant}
+      GROQ_API_URL: ${GROQ_API_URL:-https://api.groq.com/openai/v1/chat/completions}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./rag-service:/app
+      - ./documents:/app/documents
 
 volumes:
-  legal_metrology_data:
+  postgres_data:

@@ -1,0 +1,1 @@
+package com.legalmetrology; import org.springframework.boot.*; import org.springframework.boot.autoconfigure.*; @SpringBootApplication public class LegalMetrologyApplication {public static void main(String[] a){SpringApplication.run(LegalMetrologyApplication.class,a);}}
