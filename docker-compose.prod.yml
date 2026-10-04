@@ -1,0 +1,31 @@
+# Production overlay: only Nginx publishes ports; all application services remain private.
+services:
+  postgres: { ports: [] }
+  backend:
+    ports: []
+    volumes: []
+    environment:
+      PUBLIC_VERIFICATION_URL: "https://${DOMAIN}/verification"
+  frontend: { ports: [], volumes: [] }
+  rag-service:
+    ports: []
+    volumes:
+      - ./documents:/app/documents:ro
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on: [frontend, backend, rag-service]
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: "${DOMAIN}"
+    volumes:
+      - ./infrastructure/nginx/templates:/etc/nginx/templates:ro
+      - ./infrastructure/certbot/www:/var/www/certbot:ro
+      - ./infrastructure/certbot/conf:/etc/letsencrypt:ro
+    command: ["/bin/sh", "-c", "envsubst '$$DOMAIN' < /etc/nginx/templates/site.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+  certbot:
+    image: certbot/certbot:v2.11.0
+    profiles: ["certbot"]
+    volumes:
+      - ./infrastructure/certbot/www:/var/www/certbot
+      - ./infrastructure/certbot/conf:/etc/letsencrypt

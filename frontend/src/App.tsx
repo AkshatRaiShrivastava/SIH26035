@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import './App.css'
 
-const browserHost = window.location.hostname || 'localhost'
 const configuredApi = import.meta.env.VITE_API_URL as string | undefined
 const configuredRag = import.meta.env.VITE_RAG_URL as string | undefined
-const API = configuredApi && !(configuredApi.includes('localhost') && browserHost !== 'localhost') ? configuredApi : `http://${browserHost}:8080/api`
-const RAG_API = configuredRag && !(configuredRag.includes('localhost') && browserHost !== 'localhost') ? configuredRag : `http://${browserHost}:8000`
+const browserHost = window.location.hostname || 'localhost'
+// Public Nginx routes production traffic on the same HTTPS origin, avoiding CORS and exposed service ports.
+const throughNginx = window.location.protocol === 'https:' || window.location.port === '3000'
+const API = configuredApi ?? (throughNginx ? '/api' : `http://${browserHost}:8080/api`)
+const RAG_API = configuredRag ?? (throughNginx ? '/rag' : `http://${browserHost}:8000`)
 type Instrument = { model: string; manufacturer: string; serialNumber: string; accuracyClass: string; status: string }
 type TestResult = { id: string; instrumentModel: string; error: number; permissibleError: number; result: 'PASS' | 'FAIL'; status: string; ruleSource: string }
 type Citation = { document: string; section?: string; page?: number; chunk_id?: string }

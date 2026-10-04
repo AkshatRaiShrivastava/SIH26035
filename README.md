@@ -11,6 +11,10 @@ cp .env.example .env
 docker compose up --build
 ```
 
+## AWS domain + HTTPS deployment
+
+Production deployment is documented in [infrastructure/nginx/README.md](infrastructure/nginx/README.md). Configure `DOMAIN` and `LETSENCRYPT_EMAIL` in the server’s `.env`, then use the production overlay and `scripts/bootstrap-https.sh`. Nginx becomes the sole public entry point: HTTPS `/` serves the frontend, `/api/` serves Spring Boot, and `/rag/` serves FastAPI. PostgreSQL and application ports are not exposed in production.
+
 Open `http://localhost:5173`. Demo sign-in: `engineer@demo.local` with any non-empty password.
 
 The frontend uses SPA fallback routing, so direct browser navigation to application paths is supported. Service endpoints are separate: backend health is `http://localhost:8080/api/health`, RAG health is `http://localhost:8000/health`, and RAG questions use `POST http://localhost:8000/ask`.
