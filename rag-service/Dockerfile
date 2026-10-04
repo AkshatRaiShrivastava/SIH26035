@@ -3,7 +3,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Keep the CPU-oriented image small; no ML framework is required by main.py.
+RUN pip install --no-cache-dir --disable-pip-version-check -r requirements.txt
 
 COPY . .
 

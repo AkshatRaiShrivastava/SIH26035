@@ -1,6 +1,8 @@
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-sentence-transformers==2.2.2
+# The current RAG service uses page-aware PDF retrieval plus Groq for explanation.
+# Do not add sentence-transformers here unless embeddings are actually used: it pulls
+# CUDA-enabled PyTorch packages (>1 GB) and is unnecessary for this CPU deployment.
 psycopg2-binary==2.9.9
 python-multipart==0.0.6
 pypdf==3.17.4
