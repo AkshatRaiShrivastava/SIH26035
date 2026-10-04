@@ -15,6 +15,12 @@ docker compose up --build
 
 Production deployment is documented in [infrastructure/nginx/README.md](infrastructure/nginx/README.md). Configure `DOMAIN` and `LETSENCRYPT_EMAIL` in the server’s `.env`, then use the production overlay and `scripts/bootstrap-https.sh`. Nginx becomes the sole public entry point: HTTPS `/` serves the frontend, `/api/` serves Spring Boot, and `/rag/` serves FastAPI. PostgreSQL and application ports are not exposed in production.
 
+After changing the production overlay, recreate containers rather than only restarting them:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-recreate
+```
+
 ### If Docker reports “No space left on device” during a build
 
 The Maven build uses a BuildKit cache and does not run `dependency:go-offline`. Before rebuilding on a small EC2 volume, inspect Docker disk use with `docker system df`. Remove only unused build cache first with `docker builder prune -af`, then rebuild. If the host is still full and there is no data you need from stopped containers or unused images, use `docker system prune -af`; do **not** add `--volumes` unless you intentionally want to delete the PostgreSQL data volume.

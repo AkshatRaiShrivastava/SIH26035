@@ -6,7 +6,7 @@ mkdir -p infrastructure/certbot/www infrastructure/certbot/conf
 TLS_TEMPLATE=$(mktemp)
 cp infrastructure/nginx/templates/site.conf.template "$TLS_TEMPLATE"
 cp infrastructure/nginx/templates/site.http.conf.template infrastructure/nginx/templates/site.conf.template
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build postgres backend frontend rag-service nginx
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --force-recreate postgres backend frontend rag-service nginx
 docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile certbot run --rm certbot certonly --webroot -w /var/www/certbot --email "$LETSENCRYPT_EMAIL" --agree-tos --no-eff-email -d "$DOMAIN" -d "www.$DOMAIN"
 cp "$TLS_TEMPLATE" infrastructure/nginx/templates/site.conf.template
 rm -f "$TLS_TEMPLATE"

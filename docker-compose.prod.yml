@@ -1,14 +1,18 @@
 # Production overlay: only Nginx publishes ports; all application services remain private.
 services:
-  postgres: { ports: [] }
+  postgres:
+    # Docker Compose !reset removes the development host mapping instead of merging it.
+    ports: !reset []
   backend:
-    ports: []
-    volumes: []
+    ports: !reset []
+    volumes: !reset []
     environment:
       PUBLIC_VERIFICATION_URL: "https://${DOMAIN}/verification"
-  frontend: { ports: [], volumes: [] }
+  frontend:
+    ports: !reset []
+    volumes: !reset []
   rag-service:
-    ports: []
+    ports: !reset []
     volumes:
       - ./documents:/app/documents:ro
   nginx:
