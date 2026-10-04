@@ -1,3 +1,3 @@
 # Production Nginx
 
-Nginx is the only public service. It sends `/` to React, `/api/` to Spring Boot, and `/rag/` to FastAPI. Use `site.http.conf.template` only during initial certificate issuance; use `site.conf.template` after Let’s Encrypt has issued the certificate.
+Nginx is the only public service. It sends `/` to React, `/api/` to Spring Boot, and `/rag/` to FastAPI. `site.http.conf.template` is used only during initial certificate issuance. `site.conf.template` is the immutable HTTPS source; `active.conf.template` is the configuration Nginx reads and is safely switched by the bootstrap script.
